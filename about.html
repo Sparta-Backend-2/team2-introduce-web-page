@@ -146,6 +146,15 @@
             align-items: center;
             justify-content: center;
         }
+
+        .card-footer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            height : 150px;
+        }        
     </style>
 
     <script type="module">
@@ -180,7 +189,7 @@
                     let self_description = row['self-discription'];
                     let content = row['content'];
                     let blog = row['blog'];
-
+                    
                     let temp_html =
                         `<div class="card h-100">
                             <img src="${image}" class="card-img-top" alt="${name}">
@@ -190,8 +199,8 @@
                                 </div>
                                 <div class="card-footer">
                                     <small class="text-body-secondary">${content}</small>
-                                    ${blog ? `<p><a href="${blog}" target="_blank" class="card-link">블로그</a></p>` : ''}
-                                    <button class="btn btn-primary btn-sm mt-2 edit-btn" data-id="${id}">수정</button>
+                                    ${blog ? `<p><a href="${blog}" target="_blank" class="card-link">블로그 주소</a></p>` : ''}
+                                    <button class="btn btn-primary btn-sm mt-2 edit-btn" data-id="${id}" style = "width: 100%;">수정</button>
                                 </div>
                         </div>`;
                     $('#card').append(temp_html);
