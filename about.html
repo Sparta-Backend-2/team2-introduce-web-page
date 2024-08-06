@@ -254,7 +254,7 @@
         });
 
         async function loadGuestbook() {
-            try {
+            {
                 const querySnapshot = await getDocs(collection(db, "Guestbook"));
                 $('#guestbook-container').empty();
                 querySnapshot.forEach((doc) => {
@@ -268,8 +268,6 @@
                 </div>`;
                     $('#guestbook-container').append(guestbook_html);
                 });
-            } catch (error) {
-                console.error("Error loading guestbook:", error);
             }
         }
 
@@ -333,27 +331,26 @@
             }, 600);
         });
 
-            // 방명록 작성 폼 제출 처리
-            $('#submit-guestbook').click(async function() {
-                let name = $('#guestbook-name').val();
-                let message = $('#guestbook-message').val();
 
-                if (!name || !message) {
-                    alert('이름과 메시지를 모두 입력하세요.');
-                    return;
-                }
+        $('#submit-guestbook').click(async function () {
+            let name = $('#guestbook-name').val();
+            let message = $('#guestbook-message').val();
 
-                {
-                    await addDoc(collection(db, 'Guestbook'), {
-                        name: name,
-                        message: message
-                    });
-                    alert('방명록이 성공적으로 작성되었습니다.');
-                    $('#guestbook-name').val('');
-                    $('#guestbook-message').val('');
+            if (!name || !message) {
+                alert('이름과 메시지를 모두 입력하세요.');
+                return;
+            }
 
-                }
-            });
+            {
+                await addDoc(collection(db, 'Guestbook'), {
+                    name: name,
+                    message: message
+                });
+                alert('방명록이 성공적으로 작성되었습니다.');
+                $('#guestbook-name').val('');
+                $('#guestbook-message').val('');
+            }
+        });
     </script>
 </head>
 
@@ -471,7 +468,5 @@
         <button id="guestbook-btn" class="btn btn-primary mt-3">방명록 작성하기</button>
         <button id="scroll-to-top" title="맨 위로 이동">▲</button>
     </div>
-
 </body>
-
 </html>
