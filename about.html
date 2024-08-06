@@ -161,6 +161,7 @@
             messagingSenderId: "970550082038",
             appId: "1:970550082038:web:a526f70bcd79eece032fd7",
             measurementId: "G-XHELKFT8ZL"
+            
         };
 
         const app = initializeApp(firebaseConfig);
@@ -265,22 +266,38 @@
         });
 
         async function loadGuestbook() {
-            {
-                const querySnapshot = await getDocs(collection(db, "Guestbook"));
-                $('#guestbook-container').empty();
-                querySnapshot.forEach((doc) => {
-                    let data = doc.data();
-                    let guestbook_html =
-                        `<div class="card mb-2">
-                    <div class="card-body">
-                        <h5 class="card-title">${data.name}</h5>
-                        <p class="card-text">${data.message}</p>
-                    </div>
-                </div>`;
-                    $('#guestbook-container').append(guestbook_html);
-                });
+    const querySnapshot = await getDocs(collection(db, "Guestbook"));
+    $('#guestbook-container').empty(); // 기존 목록 비우기
+    querySnapshot.forEach((doc) => {
+        let data = doc.data();
+        let guestbook_html =
+            `<div class="card mb-2" data-id="${doc.id}">
+                <div class="card-body">
+                    <h5 class="card-title">${data.name}</h5>
+                    <p class="card-text">${data.message}</p>
+                    <button class="btn btn-danger btn-sm delete-btn">삭제</button>
+                </div>
+            </div>`;
+        $('#guestbook-container').append(guestbook_html);
+    });
+
+    // 삭제 버튼 클릭 이벤트 처리
+    $(document).on('click', '.delete-btn', async function() {
+        if (confirm('정말로 이 항목을 삭제하시겠습니까?')) {
+            let card = $(this).closest('.card'); // 클릭한 삭제 버튼의 상위 카드 요소 가져오기
+            let id = card.data('id'); // 해당 방명록 항목의 Firebase 문서 ID 가져오기
+
+            try {
+                await deleteDoc(doc(db, 'Guestbook', id)); // Firebase에서 문서 삭제
+                card.remove(); // 화면에서 해당 방명록 항목 제거
+                alert('방명록이 삭제되었습니다.');
+            } catch (error) {
+                console.error('삭제 중 오류 발생:', error);
+                alert('삭제하는 중에 오류가 발생했습니다.');
             }
         }
+    });
+}
 
         $(document).ready(function () {
             loadPosts();
@@ -380,6 +397,7 @@
                 scrollTop: $('#guestbookbtn').offset().top
             }, 600);
         });
+        
     </script>
 </head>
 
@@ -468,9 +486,11 @@
         </div>
     </div>
 
-    <div class="guestbook-list" id="guestbook-list">
-        <h3>방명록 목록</h3>
-        <div id="guestbook-container">
+        <div class="guestbook-list" id="guestbook-list">
+            <h3>방명록 목록</h3>
+            <div id="guestbook-container">
+                <!-- Firebase에서 불러온 방명록 목록은 여기에 동적으로 추가됨 -->
+            </div>
         </div>
         <button id="scroll-to-top" title="맨 위로 이동">▲</button>
     </div>
