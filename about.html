@@ -279,8 +279,14 @@
                 $('#mypostingbox').toggle();
             });
 
-            $('#guestbook-btn').click(function () {
+            $('#guestbookbtn').click(function () {
                 $('#myguestbookbox').toggle();
+
+                if ($('#myguestbookbox').is(':visible')) {
+                    $('html, body').animate({
+                        scrollTop: $('#myguestbookbox').offset().top
+                    }, 600);
+                }
             });
 
             $(window).scroll(function () {
@@ -297,28 +303,33 @@
                 }, 600);
                 return false;
             });
+
+            $('#submit-guestbook').click(async function (event) {
+                event.preventDefault();
+                let name = $('#guestbook-name').val();
+                let message = $('#guestbook-message').val();
+
+                if (!name || !message) {
+                    alert('이름과 메시지를 모두 입력하세요.');
+                    return;
+                }
+
+                {
+                    await addDoc(collection(db, 'Guestbook'), {
+                        name: name,
+                        message: message
+                    });
+
+                    alert('방명록이 성공적으로 작성되었습니다.');
+
+                    $('#guestbook-name').val('');
+                    $('#guestbook-message').val('');
+
+                    loadGuestbook();
+
+                }
+            });
         });
-
-        $('#guestbookbtn').click(function () {
-            $('html, body').animate({
-                scrollTop: $('#guestbook-list').offset().top
-            }, 600);
-        });
-
-        $('#guestbook-btn').click(function () {
-            $('#myguestbookbox').toggle();
-
-            if ($('#myguestbookbox').is(':visible')) {
-                $('html, body').animate({
-                    scrollTop: $('#guestbook-list').offset().top
-                }, 600);
-            }
-        });
-
-        $('#close-guestbook').click(function () {
-            $('#myguestbookbox').hide();
-        });
-
         $('#membersbtn').click(function () {
             $('html, body').animate({
                 scrollTop: $('#card').offset().top
@@ -331,25 +342,32 @@
             }, 600);
         });
 
+        $(document).on('click', '.edit-btn', function () {
+            let id = $(this).data('id');
+            $('#editbox').data('id', id);
+            $('#editbox').show();
 
-        $('#submit-guestbook').click(async function () {
-            let name = $('#guestbook-name').val();
-            let message = $('#guestbook-message').val();
 
-            if (!name || !message) {
-                alert('이름과 메시지를 모두 입력하세요.');
-                return;
-            }
+            $('html, body').animate({
+                scrollTop: $('#editbox').offset().top
+            }, 600);
+        });
 
-            {
-                await addDoc(collection(db, 'Guestbook'), {
-                    name: name,
-                    message: message
-                });
-                alert('방명록이 성공적으로 작성되었습니다.');
-                $('#guestbook-name').val('');
-                $('#guestbook-message').val('');
-            }
+        $('#close-editbox').click(function () {
+            $('#editbox').hide();
+
+            $('html, body').animate({
+                scrollTop: $('#membersbtn').offset().top
+            }, 600);
+        });
+
+        $('#close-guestbook').click(function () {
+            $('#myguestbookbox').hide();
+
+
+            $('html, body').animate({
+                scrollTop: $('#guestbookbtn').offset().top
+            }, 600);
         });
     </script>
 </head>
@@ -465,8 +483,8 @@
         <h3>방명록 목록</h3>
         <div id="guestbook-container">
         </div>
-        <button id="guestbook-btn" class="btn btn-primary mt-3">방명록 작성하기</button>
         <button id="scroll-to-top" title="맨 위로 이동">▲</button>
     </div>
 </body>
+
 </html>
