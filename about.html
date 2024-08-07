@@ -79,6 +79,14 @@
             display: none;
         }
 
+        .myjoinbox {
+            width: 500px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 3px 0px rgb(0, 0, 0);
+        }
+
         .mybtn {
             display: flex;
             flex-direction: row;
@@ -227,6 +235,41 @@
             }
         });
 
+         // 등록하기
+         $("#joinbtn").click(async function () {
+            {
+                let image = $('#join_image').val();
+                let name = $('#join_name').val();
+                let self_discription = $('#join_self_discription').val();
+                let content = $('#join_content').val();
+                let blog = $('#join_blog').val();
+
+                if (!image || !name || !self_discription || !content || !blog) {
+                    alert('모든 정보를 입력하세요!');
+                    return;
+                }
+
+                console.log(image);
+
+                let doc = {
+                    'image': image,
+                    'name': name,
+                    'self-discription': self_discription,
+                    'content': content,
+                    'blog': blog
+                };
+
+                await addDoc(collection(db, "Members"), doc);
+                alert('저장 완료!');
+                $('#joinbox').hide();
+                loadPosts();
+            }
+        });
+
+        $("#jointeambtn").click(function () {
+            $('#joinbox').toggle();
+        });
+
         $("#savebtn").click(function () {
             $('#postingbox').toggle();
         });
@@ -306,6 +349,8 @@
         $('#postingbtn').click(function () {
             $('#mypostingbox').toggle();
         });
+
+        $('#joinbox').toggle();
 
         $('#guestbookbtn').click(function () {
             $('#myguestbookbox').toggle();
@@ -408,6 +453,34 @@
         <div class="button-container">
             <button id="membersbtn">팀원소개</button>
             <button id="guestbookbtn">방명록</button>
+            <button id="jointeambtn">팀 가입</button>
+        </div>
+    </div>
+
+    <div class="myjoinbox" id="joinbox">
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="join_image" placeholder="사진 URL">
+            <label for="edit-image">사진</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="join_name" placeholder="이름">
+            <label for="edit-name">이름</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="join_self_discription" placeholder="성격 및 MBTI">
+            <label for="edit-self-discription">성격 및 MBTI</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="join_content" placeholder="자기소개">
+            <label for="edit-content">자기소개</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="join_blog" placeholder="블로그 URL">
+            <label for="edit-blog">블로그 URL</label>
+        </div>
+        <div class="mybtn">
+            <button id="joinbtn" type="button" class="btn btn-dark">등록하기</button>
+            <button type="button" class="btn btn-outline-dark" id="close-joinbox">닫기</button>
         </div>
     </div>
 
