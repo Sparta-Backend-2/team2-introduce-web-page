@@ -159,7 +159,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, updateDoc, doc } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, updateDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-analytics.js";
 
         const firebaseConfig = {
@@ -239,10 +239,25 @@
             $('#postingbox').toggle();
         });
 
+        async function setInitialValues(id) {
+            let docRef = doc(db, "Members", id);
+            let docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                let data = docSnap.data();
+                $("#edit-image").val(data.image);
+                $("#edit-name").val(data.name);
+                $("#edit-self-discription").val(data['self-discription']);
+                $("#edit-content").val(data.content);
+                $("#edit-blog").val(data.blog);
+            }
+        }
+
         $(document).on('click', '.edit-btn', function () {
             let id = $(this).data('id');
             $('#editbox').data('id', id);
             $('#editbox').show();
+            setInitialValues(id);
         });
 
         $("#editbtn").click(async function () {
