@@ -279,6 +279,10 @@
             $('#joinbox').toggle();
         });
 
+        $("#close_joinbox").click(function () {
+            $('#joinbox').toggle();
+        });
+
         $("#savebtn").click(function () {
             $('#postingbox').toggle();
         });
@@ -316,7 +320,7 @@
             if (confirm('정말로 이 항목을 삭제하시겠습니까?')) 
             {
                 await deleteDoc(doc(db, 'Members', id));
-                alert('수정 완료!');
+                alert('멤버 삭제 완료!');
                 window.location.reload();
             }
         });
@@ -531,7 +535,7 @@
         </div>
         <div class="mybtn">
             <button id="joinbtn" type="button" class="btn btn-dark">등록하기</button>
-            <button type="button" class="btn btn-outline-dark" id="close-joinbox">닫기</button>
+            <button type="button" class="btn btn-outline-dark" id="close_joinbox">닫기</button>
         </div>
     </div>
 
