@@ -279,10 +279,6 @@
             $('#joinbox').toggle();
         });
 
-        $("#close_joinbox").click(function () {
-            $('#joinbox').toggle();
-        });
-
         $("#savebtn").click(function () {
             $('#postingbox').toggle();
         });
@@ -308,22 +304,8 @@
             setInitialValues(id);
         });
 
-        
         $('#joinbox').toggle();
 
-
-        // 멤버카드 삭제
-        $("#delete_memberbtn").click(async function () {
-            let id = $('#editbox').data('id');
-            console.log(id);
-
-            if (confirm('정말로 이 항목을 삭제하시겠습니까?')) 
-            {
-                await deleteDoc(doc(db, 'Members', id));
-                alert('멤버 삭제 완료!');
-                window.location.reload();
-            }
-        });
 
         $("#editbtn").click(async function () {
             {
@@ -355,25 +337,22 @@
         });
 
         async function loadGuestbook() {
-        const querySnapshot = await getDocs(collection(db, "Guestbook"));
-        $('#guestbook-container').empty();
-        querySnapshot.forEach((doc) => {
-            let data = doc.data();
-            let guestbookTime = new Date(data.timestamp).toLocaleString();
-            let guestbook_html =
-                `<div class="card mb-2" data-id="${doc.id}">
-                    <div class="card-body d-flex justify-content-between align-items-center">
-                        <div>
-                            <h5 class="card-title">${data.name}</h5>
-                            <p class="card-text">${data.message}</p>
-                            <hr>
-                            <p class="card-text"><small class="text-muted">${guestbookTime}</small></p>
-                        </div>
-                        <button class="btn btn-danger btn-sm delete-btn">삭제</button>
-                    </div>
-                </div>`;
-            $('#guestbook-container').append(guestbook_html);
-        });
+            const querySnapshot = await getDocs(collection(db, "Guestbook"));
+            $('#guestbook-container').empty();
+            querySnapshot.forEach((doc) => {
+                let data = doc.data();
+                let guestbookTime = new Date(data.timestamp).toLocaleString();
+                let guestbook_html =
+                    `<div class="card mb-2" data-id="${doc.id}">
+                <div class="card-body">
+                    <h5 class="card-title">${data.name}</h5>
+                    <p class="card-text">${data.message}</p>
+                    <p class="card-text"><small class="text-muted">${guestbookTime}</small></p> <!-- 시간 표시 -->
+                    <button class="btn btn-danger btn-sm delete-btn">삭제</button>
+                </div>
+            </div>`;
+                $('#guestbook-container').append(guestbook_html);
+            });
         }
 
 
@@ -505,7 +484,7 @@
 </head>
 
 
-<body style="background-color:#fdfd96">
+<body>
     <div class="mytitle">
         <h1>화투 팀</h1>
         <div class="button-container">
@@ -538,7 +517,7 @@
         </div>
         <div class="mybtn">
             <button id="joinbtn" type="button" class="btn btn-dark">등록하기</button>
-            <button type="button" class="btn btn-outline-dark" id="close_joinbox">닫기</button>
+            <button type="button" class="btn btn-outline-dark" id="close-joinbox">닫기</button>
         </div>
     </div>
 
@@ -557,16 +536,16 @@
             </div>
         </div>
         <div class="card text-bg-primary mb-3" style="max-width: 18rem;">
-            <div class="card-header" style="background-color:#69D2E7">궁극적인 목표</div>
-            <div class="card-body" style="background-color:#A7DBD8">
+            <div class="card-header" style="background-color:#E5CCAD">궁극적인 목표</div>
+            <div class="card-body" style="background-color:#FFF7DE">
                 <h5 class="card-title"></h5>
                 <p class="card-text">Git 사용법 숙지하기</p>
                 <p class="card-text">내일배움캠프 끝까지 포기하지않고 수료하기</p>
             </div>
         </div>
         <div class="card text-bg-primary mb-3" style="max-width: 18rem;">
-            <div class="card-header" style="background-color:#53D19E">우리팀의 약속</div>
-            <div class="card-body" style="background-color:#18EF98">
+            <div class="card-header" style="background-color:#E5CCAD">우리팀의 약속</div>
+            <div class="card-body" style="background-color:#FFF7DE">
                 <p>회의할 때 마이크는 항상 켜기</p>
                 <p>모르는게 있으면 서로 알려주기</p>
                 <p>한명이라도 모르면 같이 짚고 넘어가기</p>
@@ -577,7 +556,7 @@
     <div class="teamIntroduce">
         <h2>팀원 소개</h2>
     </div>
-    <div class="mycards" id="card"></div>
+    <div class="mycards " id="card" ></div>
     <div class="myeditbox" id="editbox">
         <div class="form-floating mb-3">
             <input type="text" class="form-control" id="edit-image" placeholder="사진 URL">
@@ -602,7 +581,6 @@
         <div class="mybtn">
             <button id="editbtn" type="button" class="btn btn-dark">수정하기</button>
             <button type="button" class="btn btn-outline-dark" id="close-editbox">닫기</button>
-            <button type="button" class="btn btn-danger" id="delete_memberbtn">삭제</button>
         </div>
     </div>
     <hr>
