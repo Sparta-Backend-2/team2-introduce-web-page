@@ -7,7 +7,7 @@
     <title>9 to 9 2조</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap');
 
@@ -27,22 +27,22 @@
             background-color: lightgrey;
         }
 
-            .mytitle > .button-container {
-                display: flex;
-                gap: 15px;
-            }
+        .mytitle>.button-container {
+            display: flex;
+            gap: 15px;
+        }
 
-                .mytitle > .button-container > button {
-                    width: 120px;
-                    height: 50px;
-                    background-color: transparent;
-                    border: none;
-                    color: white;
-                    font-size: 18px;
-                    font-weight: bold;
-                    border-radius: 5px;
-                    border: 1px solid white;
-                }
+        .mytitle>.button-container>button {
+            width: 120px;
+            height: 50px;
+            background-color: transparent;
+            border: none;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 5px;
+            border: 1px solid white;
+        }
 
         .mycards,
         .static-cards {
@@ -95,9 +95,9 @@
             margin-top: 10px;
         }
 
-            .mybtn > button {
-                margin-right: 10px;
-            }
+        .mybtn>button {
+            margin-right: 10px;
+        }
 
         .card-img-top {
             height: 300px;
@@ -135,9 +135,9 @@
             z-index: 1000;
         }
 
-            #scroll-to-top:hover {
-                background-color: #0056b3;
-            }
+        #scroll-to-top:hover {
+            background-color: #0056b3;
+        }
 
         .teamIntroduce {
             margin-top: 30px;
@@ -159,7 +159,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, updateDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, updateDoc, doc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-analytics.js";
 
         const firebaseConfig = {
@@ -236,8 +236,8 @@
             }
         });
 
-         // 등록하기
-         $("#joinbtn").click(async function () {
+        // 등록하기
+        $("#joinbtn").click(async function () {
             {
                 let image = $('#join_image').val();
                 let name = $('#join_name').val();
@@ -296,6 +296,20 @@
             setInitialValues(id);
         });
 
+        
+        // 멤버카드 삭제
+        $("#delete_memberbtn").click(async function () {
+            let id = $('#editbox').data('id');
+            console.log(id);
+
+            if (confirm('정말로 이 항목을 삭제하시겠습니까?')) 
+            {
+                await deleteDoc(doc(db, 'Members', id));
+                alert('수정 완료!');
+                window.location.reload();
+            }
+        });
+
         $("#editbtn").click(async function () {
             {
                 let id = $('#editbox').data('id');
@@ -326,38 +340,41 @@
         });
 
         async function loadGuestbook() {
-    const querySnapshot = await getDocs(collection(db, "Guestbook"));
-    $('#guestbook-container').empty(); // 기존 목록 비우기
-    querySnapshot.forEach((doc) => {
-        let data = doc.data();
-        let guestbook_html =
-            `<div class="card mb-2" data-id="${doc.id}">
+            const querySnapshot = await getDocs(collection(db, "Guestbook"));
+            $('#guestbook-container').empty(); // 기존 목록 비우기
+            querySnapshot.forEach((doc) => {
+                let data = doc.data();
+                let guestbook_html =
+                    `<div class="card mb-2" data-id="${doc.id}">
                 <div class="card-body">
                     <h5 class="card-title">${data.name}</h5>
                     <p class="card-text">${data.message}</p>
                     <button class="btn btn-danger btn-sm delete-btn">삭제</button>
                 </div>
             </div>`;
-        $('#guestbook-container').append(guestbook_html);
-    });
+                $('#guestbook-container').append(guestbook_html);
+            });
 
-    // 삭제 버튼 클릭 이벤트 처리
-    $(document).on('click', '.delete-btn', async function() {
-        if (confirm('정말로 이 항목을 삭제하시겠습니까?')) {
-            let card = $(this).closest('.card'); // 클릭한 삭제 버튼의 상위 카드 요소 가져오기
-            let id = card.data('id'); // 해당 방명록 항목의 Firebase 문서 ID 가져오기
+            // 삭제 버튼 클릭 이벤트 처리
+            $(document).on('click', '.delete-btn', async function () {
+                if (confirm('정말로 이 항목을 삭제하시겠습니까?')) {
+                    let card = $(this).closest('.card'); // 클릭한 삭제 버튼의 상위 카드 요소 가져오기
+                    let id = card.data('id'); // 해당 방명록 항목의 Firebase 문서 ID 가져오기
 
-            try {
-                await deleteDoc(doc(db, 'Guestbook', id)); // Firebase에서 문서 삭제
-                card.remove(); // 화면에서 해당 방명록 항목 제거
-                alert('방명록이 삭제되었습니다.');
-            } catch (error) {
-                console.error('삭제 중 오류 발생:', error);
-                alert('삭제하는 중에 오류가 발생했습니다.');
-            }
+                    try {
+                        await deleteDoc(doc(db, 'Guestbook', id)); // Firebase에서 문서 삭제
+                        card.remove(); // 화면에서 해당 방명록 항목 제거
+                        alert('방명록이 삭제되었습니다.');
+                    } catch (error) {
+                        console.error('삭제 중 오류 발생:', error);
+                        alert('삭제하는 중에 오류가 발생했습니다.');
+                    }
+                }
+            });
+
+
+
         }
-    });
-}
 
         loadPosts();
         loadGuestbook();
@@ -517,7 +534,7 @@
         <div class="card text-bg-primary mb-3" style="max-width: 18rem;">
             <div class="card-header" style="background-color:#69D2E7">궁극적인 목표</div>
             <div class="card-body" style="background-color:#A7DBD8">
-                <h5 class="card-title" ></h5>
+                <h5 class="card-title"></h5>
                 <p class="card-text">Git 사용법 숙지하기</p>
                 <p class="card-text">내일배움캠프 끝까지 포기하지않고 수료하기</p>
             </div>
@@ -561,6 +578,7 @@
         <div class="mybtn">
             <button id="editbtn" type="button" class="btn btn-dark">수정하기</button>
             <button type="button" class="btn btn-outline-dark" id="close-editbox">닫기</button>
+            <button type="button" class="btn btn-danger" id="delete_memberbtn">삭제</button>
         </div>
     </div>
     <hr>
