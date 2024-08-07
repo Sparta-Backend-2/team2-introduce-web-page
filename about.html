@@ -363,7 +363,7 @@
                     $('#guestbook-message').val('');
 
                     loadGuestbook();
-
+                    $('#myguestbookbox').hide();
                 }
             });
         });
@@ -451,22 +451,11 @@
             </div>
         </div>
     </div>
-    <div class="mycards" id="card"></div>
-    <div class="myguestbookbox" id="myguestbookbox">
-        <h3>방명록 작성하기</h3>
-        <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="guestbook-name" placeholder="이름" required>
-            <label for="guestbook-name">이름</label>
-        </div>
-        <div class="form-floating mb-3">
-            <textarea class="form-control" id="guestbook-message" placeholder="메시지" required></textarea>
-            <label for="guestbook-message">메시지</label>
-        </div>
-        <div class="mybtn">
-            <button id="submit-guestbook" type="button" class="btn btn-dark">작성하기</button>
-            <button type="button" class="btn btn-outline-dark" id="close-guestbook">닫기</button>
-        </div>
+    <hr>
+    <div class="teamIntroduce">
+        <h2>팀원 소개</h2>
     </div>
+    <div class="mycards" id="card"></div>
 
     <div class="myeditbox" id="editbox">
         <div class="form-floating mb-3">
@@ -494,9 +483,26 @@
             <button type="button" class="btn btn-outline-dark" id="close-editbox">닫기</button>
         </div>
     </div>
-
+    <hr>
+    <div class="teamIntroduce">
+        <h2>방명록</h2>
+    </div>
+    <div class="myguestbookbox" id="myguestbookbox">
+        <h3>방명록 작성하기</h3>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="guestbook-name" placeholder="이름" required>
+            <label for="guestbook-name">이름</label>
+        </div>
+        <div class="form-floating mb-3">
+            <textarea class="form-control" id="guestbook-message" placeholder="메시지" required></textarea>
+            <label for="guestbook-message">메시지</label>
+        </div>
+        <div class="mybtn">
+            <button id="submit-guestbook" type="button" class="btn btn-dark">작성하기</button>
+            <button type="button" class="btn btn-outline-dark" id="close-guestbook">닫기</button>
+        </div>
+    </div>
         <div class="guestbook-list" id="guestbook-list">
-            <h3>방명록 목록 </h3>
             <div id="guestbook-container">
                 <!-- Firebase에서 불러온 방명록 목록은 여기에 동적으로 추가됨 -->
             </div>
