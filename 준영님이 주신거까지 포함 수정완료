@@ -19,13 +19,12 @@
 
         .mytitle {
             color: white;
-            height: 250px;
+            height: 450px;
             display: flex;
-
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('https://i.namu.wiki/i/Bl01i-W9OB_vZC5vPoGaApOM3Bop0RdXhPm2m_iBrFNlZAHGg6IYICR_kQ271Z1odVM4PZEr_DII7dL2-Jg1o-Va0138QOoASHBtp-i4tnzLecrUPsyqRvMpjqcKEDYi5fZ6iMnSPgQK867raeOdkg.webp');
+            background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('https://blog.kakaocdn.net/dn/U1xPb/btrMYrxNgTy/MLe6kjPStut5KakQSgMnCk/img.png');
             background-size: cover;
             background-color: lightgrey;
         }
@@ -90,6 +89,14 @@
             align-items: center;
             justify-content: center;
             margin-top: 10px;
+        }
+
+        .myjoinbox {
+            width: 500px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 3px 0px rgb(0, 0, 0);
         }
 
         .mybtn>button {
@@ -157,6 +164,8 @@
 
             height: 150px;
         }
+
+
     </style>
 
     <script type="module">
@@ -237,14 +246,44 @@
             }
         });
 
-        $("#savebtn").click(function () {
-            $('#postingbox').toggle();
+        $("#joinbtn").click(async function () {
+            {
+                let image = $('#join_image').val();
+                let name = $('#join_name').val();
+                let self_discription = $('#join_self_discription').val();
+                let content = $('#join_content').val();
+                let blog = $('#join_blog').val();
+
+                if (!image || !name || !self_discription || !content || !blog) {
+                    alert('모든 정보를 입력하세요!');
+                    return;
+                }
+
+                console.log(image);
+
+                let doc = {
+                    'image': image,
+                    'name': name,
+                    'self-discription': self_discription,
+                    'content': content,
+                    'blog': blog
+                };
+
+                await addDoc(collection(db, "Members"), doc);
+                alert('저장 완료!');
+                $('#joinbox').hide();
+                loadPosts();
+            }
         });
 
-        $(document).on('click', '.edit-btn', function () {
-            let id = $(this).data('id');
-            $('#editbox').data('id', id);
-            $('#editbox').show();
+        $("#jointeambtn").click(function () {
+            $('#joinbox').toggle();
+        });
+
+        $('#joinbox').toggle();
+
+        $("#savebtn").click(function () {
+            $('#postingbox').toggle();
         });
 
         $("#editbtn").click(async function () {
@@ -281,7 +320,7 @@
             $('#guestbook-container').empty();
             querySnapshot.forEach((doc) => {
                 let data = doc.data();
-                let guestbookTime = new Date(data.timestamp).toLocaleString(); 
+                let guestbookTime = new Date(data.timestamp).toLocaleString();
                 let guestbook_html =
                     `<div class="card mb-2" data-id="${doc.id}">
                 <div class="card-body">
@@ -345,7 +384,7 @@
                 let guestbookEntry = {
                     name: name,
                     message: message,
-                    timestamp: timestamp 
+                    timestamp: timestamp
                 };
 
                 try {
@@ -355,7 +394,7 @@
                     $('#guestbook-name').val('');
                     $('#guestbook-message').val('');
 
-                    loadGuestbook(); 
+                    loadGuestbook();
                 } catch (error) {
                     console.error('방명록 작성 중 오류 발생:', error);
                     alert('방명록을 작성하는 중에 오류가 발생했습니다.');
@@ -393,6 +432,8 @@
             }, 600);
         });
 
+
+
         $('#close-guestbook').click(function () {
             $('#myguestbookbox').hide();
 
@@ -428,6 +469,34 @@
         <div class="button-container">
             <button id="membersbtn">팀원소개</button>
             <button id="guestbookbtn">방명록</button>
+            <button id="jointeambtn">팀 가입</button>
+        </div>
+    </div>
+
+    <div class="myjoinbox" id="joinbox">
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="join_image" placeholder="사진 URL">
+            <label for="edit-image">사진</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="join_name" placeholder="이름">
+            <label for="edit-name">이름</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="join_self_discription" placeholder="성격 및 MBTI">
+            <label for="edit-self-discription">성격 및 MBTI</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="join_content" placeholder="자기소개">
+            <label for="edit-content">자기소개</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="join_blog" placeholder="블로그 URL">
+            <label for="edit-blog">블로그 URL</label>
+        </div>
+        <div class="mybtn">
+            <button id="joinbtn" type="button" class="btn btn-dark">등록하기</button>
+            <button type="button" class="btn btn-outline-dark" id="close-joinbox">닫기</button>
         </div>
     </div>
 
@@ -462,23 +531,11 @@
             </div>
         </div>
     </div>
-    <div class="mycards" id="card"></div>
-    <div class="myguestbookbox" id="myguestbookbox">
-        <h3>방명록 작성하기</h3>
-        <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="guestbook-name" placeholder="이름" required>
-            <label for="guestbook-name">이름</label>
-        </div>
-        <div class="form-floating mb-3">
-            <textarea class="form-control" id="guestbook-message" placeholder="메시지" rows="4" cols="50"
-                required></textarea>
-            <label for="guestbook-message">메시지</label>
-        </div>
-        <div class="mybtn">
-            <button id="submit-guestbook" type="button" class="btn btn-dark">작성하기</button>
-            <button type="button" class="btn btn-outline-dark" id="close-guestbook">닫기</button>
-        </div>
+    <hr>
+    <div class="teamIntroduce">
+        <h2>팀원 소개</h2>
     </div>
+    <div class="mycards" id="card"></div>
     <div class="myeditbox" id="editbox">
         <div class="form-floating mb-3">
             <input type="text" class="form-control" id="edit-image" placeholder="사진 URL">
@@ -505,10 +562,29 @@
             <button type="button" class="btn btn-outline-dark" id="close-editbox">닫기</button>
         </div>
     </div>
+<hr>
+    <div class="teamIntroduce">
+    <h2>방명록</h2>
 
+    <div class="myguestbookbox" id="myguestbookbox">
+        <h3>방명록 작성하기</h3>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="guestbook-name" placeholder="이름" required>
+            <label for="guestbook-name">이름</label>
+        </div>
+        <div class="form-floating mb-3">
+            <textarea class="form-control" id="guestbook-message" placeholder="메시지" rows="4" cols="50"
+                required></textarea>
+            <label for="guestbook-message">메시지</label>
+        </div>
+        <div class="mybtn">
+            <button id="submit-guestbook" type="button" class="btn btn-dark">작성하기</button>
+            <button type="button" class="btn btn-outline-dark" id="close-guestbook">닫기</button>
+        </div>
+    </div>
     <div class="guestbook-list" id="guestbook-list">
-        <h3>방명록 목록</h3>
-        <div id="guestbook-container"></div>
+        <div id="guestbook-container">
+        </div>
     </div>
     <button id="scroll-to-top" title="맨 위로 이동">▲</button>
     </div>
