@@ -7,7 +7,7 @@
     <title>9 to 9 2조</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap');
 
@@ -18,8 +18,7 @@
         .mytitle {
             color: white;
             height: 450px;
-            display: flex;       
-
+            display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
@@ -28,23 +27,22 @@
             background-color: lightgrey;
         }
 
-        .mytitle>.button-container {
-            display: flex;
-            gap: 15px;
-        }
+            .mytitle > .button-container {
+                display: flex;
+                gap: 15px;
+            }
 
-        .mytitle>.button-container>button {
-            width: 120px;
-
-            height: 50px;
-            background-color: transparent;
-            border: none;
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 5px;
-            border: 1px solid white;
-        }
+                .mytitle > .button-container > button {
+                    width: 120px;
+                    height: 50px;
+                    background-color: transparent;
+                    border: none;
+                    color: white;
+                    font-size: 18px;
+                    font-weight: bold;
+                    border-radius: 5px;
+                    border: 1px solid white;
+                }
 
         .mycards,
         .static-cards {
@@ -59,7 +57,6 @@
         .mycards {
             position: relative;
             z-index: 1;
-
         }
 
         .static-cards {
@@ -82,6 +79,14 @@
             display: none;
         }
 
+        .myjoinbox {
+            width: 500px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 3px 0px rgb(0, 0, 0);
+        }
+
         .mybtn {
             display: flex;
             flex-direction: row;
@@ -90,9 +95,9 @@
             margin-top: 10px;
         }
 
-        .mybtn>button {
-            margin-right: 10px;
-        }
+            .mybtn > button {
+                margin-right: 10px;
+            }
 
         .card-img-top {
             height: 300px;
@@ -101,7 +106,6 @@
 
         .text-bg-primary {
             text-align: center;
-
         }
 
         .guestbook-list {
@@ -123,26 +127,23 @@
             width: 50px;
             height: 50px;
             display: none;
-
             align-items: center;
             justify-content: center;
             font-size: 20px;
             cursor: pointer;
             box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
             z-index: 1000;
-
         }
 
-        #scroll-to-top:hover {
-            background-color: #0056b3;
-        }
+            #scroll-to-top:hover {
+                background-color: #0056b3;
+            }
 
-        .teamIntroduce {            
+        .teamIntroduce {
             margin-top: 30px;
             margin-bottom: 20px;
-
             display: flex;
-            flex-direction: column;            
+            flex-direction: column;
             align-items: center;
             justify-content: center;
         }
@@ -152,9 +153,8 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-
-            height : 150px;
-        }        
+            height: 150px;
+        }
     </style>
 
     <script type="module">
@@ -170,7 +170,7 @@
             messagingSenderId: "970550082038",
             appId: "1:970550082038:web:a526f70bcd79eece032fd7",
             measurementId: "G-XHELKFT8ZL"
-            
+
         };
 
         const app = initializeApp(firebaseConfig);
@@ -189,12 +189,13 @@
                     let self_description = row['self-discription'];
                     let content = row['content'];
                     let blog = row['blog'];
-                    
+
                     let temp_html =
                         `<div class="card h-100">
                             <img src="${image}" class="card-img-top" alt="${name}">
                                 <div class="card-body">
                                     <h5 class="card-title">${name}</h5>
+                                    <hr>
                                     <p class="card-text">${self_description}</p>
                                 </div>
                                 <div class="card-footer">
@@ -233,6 +234,41 @@
                 $('#postingbox').hide();
                 loadPosts();
             }
+        });
+
+         // 등록하기
+         $("#joinbtn").click(async function () {
+            {
+                let image = $('#join_image').val();
+                let name = $('#join_name').val();
+                let self_discription = $('#join_self_discription').val();
+                let content = $('#join_content').val();
+                let blog = $('#join_blog').val();
+
+                if (!image || !name || !self_discription || !content || !blog) {
+                    alert('모든 정보를 입력하세요!');
+                    return;
+                }
+
+                console.log(image);
+
+                let doc = {
+                    'image': image,
+                    'name': name,
+                    'self-discription': self_discription,
+                    'content': content,
+                    'blog': blog
+                };
+
+                await addDoc(collection(db, "Members"), doc);
+                alert('저장 완료!');
+                $('#joinbox').hide();
+                loadPosts();
+            }
+        });
+
+        $("#jointeambtn").click(function () {
+            $('#joinbox').toggle();
         });
 
         $("#savebtn").click(function () {
@@ -323,65 +359,66 @@
     });
 }
 
-        $(document).ready(function () {
-            loadPosts();
-            loadGuestbook();
+        loadPosts();
+        loadGuestbook();
 
-            $('#postingbtn').click(function () {
-                $('#mypostingbox').toggle();
-            });
-
-            $('#guestbookbtn').click(function () {
-                $('#myguestbookbox').toggle();
-
-                if ($('#myguestbookbox').is(':visible')) {
-                    $('html, body').animate({
-                        scrollTop: $('#myguestbookbox').offset().top
-                    }, 600);
-                }
-            });
-
-            $(window).scroll(function () {
-                if ($(this).scrollTop() > 100) {
-                    $('#scroll-to-top').fadeIn();
-                } else {
-                    $('#scroll-to-top').fadeOut();
-                }
-            });
-
-            $('#scroll-to-top').click(function () {
-                $("html, body").animate({
-                    scrollTop: 0
-                }, 600);
-                return false;
-            });
-
-            $('#submit-guestbook').click(async function (event) {
-                event.preventDefault();
-                let name = $('#guestbook-name').val();
-                let message = $('#guestbook-message').val();
-
-                if (!name || !message) {
-                    alert('이름과 메시지를 모두 입력하세요.');
-                    return;
-                }
-
-                {
-                    await addDoc(collection(db, 'Guestbook'), {
-                        name: name,
-                        message: message
-                    });
-
-                    alert('방명록이 성공적으로 작성되었습니다.');
-
-                    $('#guestbook-name').val('');
-                    $('#guestbook-message').val('');
-
-                    loadGuestbook();
-                    $('#myguestbookbox').hide();
-                }
-            });
+        $('#postingbtn').click(function () {
+            $('#mypostingbox').toggle();
         });
+
+        $('#joinbox').toggle();
+
+        $('#guestbookbtn').click(function () {
+            $('#myguestbookbox').toggle();
+
+            if ($('#myguestbookbox').is(':visible')) {
+                $('html, body').animate({
+                    scrollTop: $('#myguestbookbox').offset().top
+                }, 600);
+            }
+        });
+
+        $(window).scroll(function () {
+            if ($(this).scrollTop() > 100) {
+                $('#scroll-to-top').fadeIn();
+            } else {
+                $('#scroll-to-top').fadeOut();
+            }
+        });
+
+        $('#scroll-to-top').click(function () {
+            $("html, body").animate({
+                scrollTop: 0
+            }, 600);
+            return false;
+        });
+
+        $('#submit-guestbook').click(async function (event) {
+            event.preventDefault();
+            let name = $('#guestbook-name').val();
+            let message = $('#guestbook-message').val();
+
+            if (!name || !message) {
+                alert('이름과 메시지를 모두 입력하세요.');
+                return;
+            }
+
+            {
+                await addDoc(collection(db, 'Guestbook'), {
+                    name: name,
+                    message: message
+                });
+
+                alert('방명록이 성공적으로 작성되었습니다.');
+
+                $('#guestbook-name').val('');
+                $('#guestbook-message').val('');
+
+                loadGuestbook();
+                $('#myguestbookbox').hide();
+            }
+        });
+
         $('#membersbtn').click(function () {
             $('html, body').animate({
                 scrollTop: $('#card').offset().top
@@ -421,28 +458,56 @@
                 scrollTop: $('#guestbookbtn').offset().top
             }, 600);
         });
-        
+
     </script>
 </head>
 
 
-<body>
+<body style="background-color:#fdfd96">
     <div class="mytitle">
         <h1>화투 팀</h1>
-        <div class="button-container">            
+        <div class="button-container">
             <button id="membersbtn">팀원소개</button>
             <button id="guestbookbtn">방명록</button>
+            <button id="jointeambtn">팀 가입</button>
         </div>
-    </div>    
-    
+    </div>
+
+    <div class="myjoinbox" id="joinbox">
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="join_image" placeholder="사진 URL">
+            <label for="edit-image">사진</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="join_name" placeholder="이름">
+            <label for="edit-name">이름</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="join_self_discription" placeholder="성격 및 MBTI">
+            <label for="edit-self-discription">성격 및 MBTI</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="join_content" placeholder="자기소개">
+            <label for="edit-content">자기소개</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="join_blog" placeholder="블로그 URL">
+            <label for="edit-blog">블로그 URL</label>
+        </div>
+        <div class="mybtn">
+            <button id="joinbtn" type="button" class="btn btn-dark">등록하기</button>
+            <button type="button" class="btn btn-outline-dark" id="close-joinbox">닫기</button>
+        </div>
+    </div>
+
     <div class="teamIntroduce">
         <h2>팀 소개</h2>
     </div>
 
     <div class="static-cards">
         <div class="card text-bg-primary mb-3" style="max-width: 18rem;">
-            <div class="card-header">우리팀만의 특징</div>
-            <div class="card-body">
+            <div class="card-header" style="background-color:#E5CCAD">우리팀만의 특징</div>
+            <div class="card-body" style="background-color:#FFF7DE">
                 <h5 class="card-title"></h5>
                 <p class="card-text">I5</p>
                 <p class="card-text">조용합니다</p>
@@ -450,18 +515,18 @@
             </div>
         </div>
         <div class="card text-bg-primary mb-3" style="max-width: 18rem;">
-            <div class="card-header">궁극적인 목표</div>
-            <div class="card-body">
-                <h5 class="card-title"></h5>
+            <div class="card-header" style="background-color:#69D2E7">궁극적인 목표</div>
+            <div class="card-body" style="background-color:#A7DBD8">
+                <h5 class="card-title" ></h5>
                 <p class="card-text">Git 사용법 숙지하기</p>
                 <p class="card-text">내일배움캠프 끝까지 포기하지않고 수료하기</p>
             </div>
         </div>
         <div class="card text-bg-primary mb-3" style="max-width: 18rem;">
-            <div class="card-header">우리팀의 약속</div>
-            <div class="card-body">
+            <div class="card-header" style="background-color:#53D19E">우리팀의 약속</div>
+            <div class="card-body" style="background-color:#18EF98">
                 <p>회의할 때 마이크는 항상 켜기</p>
-                <p>모르는게 있으면 서로 알려주기</p>                   
+                <p>모르는게 있으면 서로 알려주기</p>
                 <p>한명이라도 모르면 같이 짚고 넘어가기</p>
             </div>
         </div>
@@ -509,7 +574,7 @@
             <label for="guestbook-name">이름</label>
         </div>
         <div class="form-floating mb-3">
-            <textarea class="form-control" id="guestbook-message" placeholder="메시지" required></textarea>
+            <texta class="form-control" id="guestbook-message" placeholder="메시지" required></texta>
             <label for="guestbook-message">메시지</label>
         </div>
         <div class="mybtn">
@@ -517,12 +582,12 @@
             <button type="button" class="btn btn-outline-dark" id="close-guestbook">닫기</button>
         </div>
     </div>
-        <div class="guestbook-list" id="guestbook-list">
-            <div id="guestbook-container">
-                <!-- Firebase에서 불러온 방명록 목록은 여기에 동적으로 추가됨 -->
-            </div>
+    <div class="guestbook-list" id="guestbook-list">
+        <div id="guestbook-container">
+            <!-- Firebase에서 불러온 방명록 목록은 여기에 동적으로 추가됨 -->
         </div>
-        <button id="scroll-to-top" title="맨 위로 이동">▲</button>
+    </div>
+    <button id="scroll-to-top" title="맨 위로 이동">▲</button>
     </div>
 </body>
 
