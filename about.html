@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>9 to 9 2조</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <style>
@@ -34,6 +36,7 @@
 
         .mytitle>.button-container>button {
             width: 120px;
+
             height: 50px;
             background-color: transparent;
             border: none;
@@ -57,6 +60,7 @@
         .mycards {
             position: relative;
             z-index: 1;
+
         }
 
         .static-cards {
@@ -79,20 +83,20 @@
             display: none;
         }
 
-        .myjoinbox {
-            width: 500px;
-            margin: 20px auto;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0px 0px 3px 0px rgb(0, 0, 0);
-        }
-
         .mybtn {
             display: flex;
             flex-direction: row;
             align-items: center;
             justify-content: center;
             margin-top: 10px;
+        }
+
+        .myjoinbox {
+            width: 500px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 3px 0px rgb(0, 0, 0);
         }
 
         .mybtn>button {
@@ -106,6 +110,7 @@
 
         .text-bg-primary {
             text-align: center;
+
         }
 
         .guestbook-list {
@@ -127,12 +132,14 @@
             width: 50px;
             height: 50px;
             display: none;
+
             align-items: center;
             justify-content: center;
             font-size: 20px;
             cursor: pointer;
             box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
             z-index: 1000;
+
         }
 
         #scroll-to-top:hover {
@@ -142,6 +149,7 @@
         .teamIntroduce {
             margin-top: 30px;
             margin-bottom: 20px;
+
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -153,6 +161,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
+
             height: 150px;
         }
     </style>
@@ -236,7 +245,6 @@
             }
         });
 
-        // 등록하기
         $("#joinbtn").click(async function () {
             {
                 let image = $('#join_image').val();
@@ -297,6 +305,9 @@
         });
 
         
+        $('#joinbox').toggle();
+
+
         // 멤버카드 삭제
         $("#delete_memberbtn").click(async function () {
             let id = $('#editbox').data('id');
@@ -341,101 +352,90 @@
 
         async function loadGuestbook() {
             const querySnapshot = await getDocs(collection(db, "Guestbook"));
-            $('#guestbook-container').empty(); // 기존 목록 비우기
+            $('#guestbook-container').empty();
             querySnapshot.forEach((doc) => {
                 let data = doc.data();
+                let guestbookTime = new Date(data.timestamp).toLocaleString();
                 let guestbook_html =
                     `<div class="card mb-2" data-id="${doc.id}">
                 <div class="card-body">
                     <h5 class="card-title">${data.name}</h5>
                     <p class="card-text">${data.message}</p>
+                    <p class="card-text"><small class="text-muted">${guestbookTime}</small></p> <!-- 시간 표시 -->
                     <button class="btn btn-danger btn-sm delete-btn">삭제</button>
                 </div>
             </div>`;
                 $('#guestbook-container').append(guestbook_html);
             });
+        }
 
-            // 삭제 버튼 클릭 이벤트 처리
-            $(document).on('click', '.delete-btn', async function () {
-                if (confirm('정말로 이 항목을 삭제하시겠습니까?')) {
-                    let card = $(this).closest('.card'); // 클릭한 삭제 버튼의 상위 카드 요소 가져오기
-                    let id = card.data('id'); // 해당 방명록 항목의 Firebase 문서 ID 가져오기
 
-                    try {
-                        await deleteDoc(doc(db, 'Guestbook', id)); // Firebase에서 문서 삭제
-                        card.remove(); // 화면에서 해당 방명록 항목 제거
-                        alert('방명록이 삭제되었습니다.');
-                    } catch (error) {
-                        console.error('삭제 중 오류 발생:', error);
-                        alert('삭제하는 중에 오류가 발생했습니다.');
-                    }
+        $(document).ready(function () {
+            loadPosts();
+            loadGuestbook();
+
+            $('#postingbtn').click(function () {
+                $('#mypostingbox').toggle();
+            });
+
+            $('#guestbookbtn').click(function () {
+                $('#myguestbookbox').toggle();
+
+                if ($('#myguestbookbox').is(':visible')) {
+                    $('html, body').animate({
+                        scrollTop: $('#myguestbookbox').offset().top
+                    }, 600);
                 }
             });
 
+            $(window).scroll(function () {
+                if ($(this).scrollTop() > 100) {
+                    $('#scroll-to-top').fadeIn();
+                } else {
+                    $('#scroll-to-top').fadeOut();
+                }
+            });
 
-
-        }
-
-        loadPosts();
-        loadGuestbook();
-
-        $('#postingbtn').click(function () {
-            $('#mypostingbox').toggle();
-        });
-
-        $('#joinbox').toggle();
-
-        $('#guestbookbtn').click(function () {
-            $('#myguestbookbox').toggle();
-
-            if ($('#myguestbookbox').is(':visible')) {
-                $('html, body').animate({
-                    scrollTop: $('#myguestbookbox').offset().top
+            $('#scroll-to-top').click(function () {
+                $("html, body").animate({
+                    scrollTop: 0
                 }, 600);
-            }
-        });
+                return false;
+            });
 
-        $(window).scroll(function () {
-            if ($(this).scrollTop() > 100) {
-                $('#scroll-to-top').fadeIn();
-            } else {
-                $('#scroll-to-top').fadeOut();
-            }
-        });
+            $('#submit-guestbook').click(async function (event) {
+                event.preventDefault();
+                let name = $('#guestbook-name').val();
+                let message = $('#guestbook-message').val();
 
-        $('#scroll-to-top').click(function () {
-            $("html, body").animate({
-                scrollTop: 0
-            }, 600);
-            return false;
-        });
+                if (!name || !message) {
+                    alert('이름과 메시지를 모두 입력하세요.');
+                    return;
+                }
 
-        $('#submit-guestbook').click(async function (event) {
-            event.preventDefault();
-            let name = $('#guestbook-name').val();
-            let message = $('#guestbook-message').val();
+                let currentDate = new Date();
+                let timestamp = currentDate.getTime();
 
-            if (!name || !message) {
-                alert('이름과 메시지를 모두 입력하세요.');
-                return;
-            }
-
-            {
-                await addDoc(collection(db, 'Guestbook'), {
+                let guestbookEntry = {
                     name: name,
-                    message: message
-                });
+                    message: message,
+                    timestamp: timestamp
+                };
 
-                alert('방명록이 성공적으로 작성되었습니다.');
+                try {
+                    await addDoc(collection(db, 'Guestbook'), guestbookEntry);
+                    alert('방명록이 성공적으로 작성되었습니다.');
 
-                $('#guestbook-name').val('');
-                $('#guestbook-message').val('');
+                    $('#guestbook-name').val('');
+                    $('#guestbook-message').val('');
 
-                loadGuestbook();
-                $('#myguestbookbox').hide();
-            }
+                    loadGuestbook();
+                } catch (error) {
+                    console.error('방명록 작성 중 오류 발생:', error);
+                    alert('방명록을 작성하는 중에 오류가 발생했습니다.');
+                }
+            });
         });
-
         $('#membersbtn').click(function () {
             $('html, body').animate({
                 scrollTop: $('#card').offset().top
@@ -467,6 +467,8 @@
             }, 600);
         });
 
+
+
         $('#close-guestbook').click(function () {
             $('#myguestbookbox').hide();
 
@@ -476,6 +478,22 @@
             }, 600);
         });
 
+
+        $(document).on('click', '.delete-btn', async function () {
+            if (confirm('정말로 이 항목을 삭제하시겠습니까?')) {
+                let card = $(this).closest('.card');
+                let id = card.data('id');
+
+                try {
+                    await deleteDoc(doc(db, 'Guestbook', id));
+                    card.remove();
+                    alert('방명록이 삭제되었습니다.');
+                } catch (error) {
+                    console.error('삭제 중 오류 발생:', error);
+                    alert('삭제하는 중에 오류가 발생했습니다.');
+                }
+            }
+        });
     </script>
 </head>
 
@@ -553,7 +571,6 @@
         <h2>팀원 소개</h2>
     </div>
     <div class="mycards" id="card"></div>
-
     <div class="myeditbox" id="editbox">
         <div class="form-floating mb-3">
             <input type="text" class="form-control" id="edit-image" placeholder="사진 URL">
@@ -584,28 +601,28 @@
     <hr>
     <div class="teamIntroduce">
         <h2>방명록</h2>
-    </div>
-    <div class="myguestbookbox" id="myguestbookbox">
-        <h3>방명록 작성하기</h3>
-        <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="guestbook-name" placeholder="이름" required>
-            <label for="guestbook-name">이름</label>
+
+        <div class="myguestbookbox" id="myguestbookbox">
+            <h3>방명록 작성하기</h3>
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="guestbook-name" placeholder="이름" required>
+                <label for="guestbook-name">이름</label>
+            </div>
+            <div class="form-floating mb-3">
+                <textarea class="form-control" id="guestbook-message" placeholder="메시지" rows="4" cols="50"
+                    required></textarea>
+                <label for="guestbook-message">메시지</label>
+            </div>
+            <div class="mybtn">
+                <button id="submit-guestbook" type="button" class="btn btn-dark">작성하기</button>
+                <button type="button" class="btn btn-outline-dark" id="close-guestbook">닫기</button>
+            </div>
         </div>
-        <div class="form-floating mb-3">
-            <texta class="form-control" id="guestbook-message" placeholder="메시지" required></texta>
-            <label for="guestbook-message">메시지</label>
+        <div class="guestbook-list" id="guestbook-list">
+            <div id="guestbook-container">
+            </div>
         </div>
-        <div class="mybtn">
-            <button id="submit-guestbook" type="button" class="btn btn-dark">작성하기</button>
-            <button type="button" class="btn btn-outline-dark" id="close-guestbook">닫기</button>
-        </div>
-    </div>
-    <div class="guestbook-list" id="guestbook-list">
-        <div id="guestbook-container">
-            <!-- Firebase에서 불러온 방명록 목록은 여기에 동적으로 추가됨 -->
-        </div>
-    </div>
-    <button id="scroll-to-top" title="맨 위로 이동">▲</button>
+        <button id="scroll-to-top" title="맨 위로 이동">▲</button>
     </div>
 </body>
 
