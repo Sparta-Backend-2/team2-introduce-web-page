@@ -355,22 +355,25 @@
         });
 
         async function loadGuestbook() {
-            const querySnapshot = await getDocs(collection(db, "Guestbook"));
-            $('#guestbook-container').empty();
-            querySnapshot.forEach((doc) => {
-                let data = doc.data();
-                let guestbookTime = new Date(data.timestamp).toLocaleString();
-                let guestbook_html =
-                    `<div class="card mb-2" data-id="${doc.id}">
-                <div class="card-body">
-                    <h5 class="card-title">${data.name}</h5>
-                    <p class="card-text">${data.message}</p>
-                    <p class="card-text"><small class="text-muted">${guestbookTime}</small></p> <!-- 시간 표시 -->
-                    <button class="btn btn-danger btn-sm delete-btn">삭제</button>
-                </div>
-            </div>`;
-                $('#guestbook-container').append(guestbook_html);
-            });
+        const querySnapshot = await getDocs(collection(db, "Guestbook"));
+        $('#guestbook-container').empty();
+        querySnapshot.forEach((doc) => {
+            let data = doc.data();
+            let guestbookTime = new Date(data.timestamp).toLocaleString();
+            let guestbook_html =
+                `<div class="card mb-2" data-id="${doc.id}">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="card-title">${data.name}</h5>
+                            <p class="card-text">${data.message}</p>
+                            <hr>
+                            <p class="card-text"><small class="text-muted">${guestbookTime}</small></p>
+                        </div>
+                        <button class="btn btn-danger btn-sm delete-btn">삭제</button>
+                    </div>
+                </div>`;
+            $('#guestbook-container').append(guestbook_html);
+        });
         }
 
 
