@@ -37,7 +37,7 @@ async function loadPosts() {
                                     <div class="card-body">
                                         <h5 class="card-title">${name}</h5>
                                         <hr>
-                                        <p class="card-text">${self_description}</p>
+                                        <p class="card-description">${self_description}</p>
                                     </div>
                                     <div class="card-footer">
                                         <small class="text-body-secondary">${content}</small>
