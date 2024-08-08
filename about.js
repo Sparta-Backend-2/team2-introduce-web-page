@@ -1,6 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
-import { getFirestore, collection, getDocs, addDoc, updateDoc, doc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, addDoc, updateDoc, doc, getDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-analytics.js";
+
 
 const firebaseConfig = {
     apiKey: "AIzaSyCdU8NhpFT6489DMGs2MPWQSdJR5QbRJoI",
@@ -29,7 +30,7 @@ async function loadPosts() {
             let self_description = row['self-discription'];
             let content = row['content'];
             let blog = row['blog'];
-            
+
             let temp_html =
                 `<div class="card h-100">
                                 <img src="${image}" class="card-img-top" alt="${name}">
@@ -184,8 +185,10 @@ $("#editbtn").click(async function () {
     }
 });
 
-async function loadGuestbook() {    
-    const querySnapshot = await getDocs(collection(db, "Guestbook"));    
+async function loadGuestbook() {
+    const q = query(collection(db, "Guestbook"), orderBy("timestamp", "asc"));
+    const querySnapshot = await getDocs(q);
+    //const querySnapshot = await getDocs(collection(db, "Guestbook"));
     $('#guestbook-container').empty();
     querySnapshot.forEach((doc) => {
         let data = doc.data();
@@ -215,7 +218,7 @@ $('#postingbtn').click(function () {
 });
 
 $('#guestbookbtn').click(function () {
-    window.open("guestbook.html", "_blank", `width=1000, height=600, toolbars=no, scrollbars=no`);    
+    window.open("guestbook.html", "_blank", `width=1000, height=600, toolbars=no, scrollbars=no`);
 });
 
 $(window).scroll(function () {
@@ -255,7 +258,7 @@ $('#submit-guestbook').click(async function (event) {
     try {
         await addDoc(collection(db, 'Guestbook'), guestbookEntry);
         alert('방명록이 성공적으로 작성되었습니다.');
-        
+
         $('#guestbook-name').val('');
         $('#guestbook-message').val('');
 
@@ -331,7 +334,7 @@ export function GetGuestbookContent(Name, guestbookContentData, guestBookWindow)
         return;
     }
 
-    DB_SaveGuestBookContent(Name, guestbookContentData, guestBookWindow);    
+    DB_SaveGuestBookContent(Name, guestbookContentData, guestBookWindow);
 }
 
 
@@ -346,7 +349,7 @@ async function DB_SaveGuestBookContent(name, message, guestBookWindow) {
     };
 
     await addDoc(collection(db, 'Guestbook'), guestbookEntry);
-   
+
     loadGuestbook();
     // 방명록 팝업창 닫기
     guestBookWindow.close();
