@@ -28,13 +28,17 @@
     </style>
 
     <script type="module">
-        $("#postingbtn").click(function () {
+        import { GetGuestbookContent } from "./about.js"
 
-            let guestbookContentData = $("#guestbook-content").val();
-            console.log(guestbookContentData);
-            //opener.call(guestbookContentData);
-            //opener.guestbookContent(guestbookContentData);
-            //window.close();
+        $("#guestBookPostingBtn").click(function () {
+            let guestBookNameData = $("#guestBookName").val();
+            let guestbookContentData = $("#guestBookContent").val();
+
+            GetGuestbookContent(guestBookNameData, guestbookContentData, window);                  
+        })
+
+        $("#guestBookCloseBtn").click(function () {
+            window.close();
         })
     </script>
 </head>
@@ -43,17 +47,17 @@
     <div class="myguestbookbox">
         <h3>방명록 작성하기</h3>
         <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="guestbook-name" placeholder="이름" required>
-            <label for="guestbook-name">이름</label>
+            <input type="text" class="form-control" id="guestBookName" placeholder="이름" required>
+            <label for="guestBookName">이름</label>
         </div>
         <div class="form-floating mb-3" style="width: 300px; height:300px">
-            <textarea class="form-control" id="guestbook-content" placeholder="내용" required
+            <textarea class="form-control" id="guestBookContent" placeholder="내용" required
                       style="height:300px"></textarea>
-            <label for="guestbook-content">내용</label>
+            <label for="guestBookContent">내용</label>
         </div>
         <div class="mybtn">
-            <button type="button" class="btn btn-dark" id="postingbtn">작성하기</button>
-            <button type="button" class="btn btn-outline-dark" id="close-guestbook">닫기</button>
+            <button type="button" class="btn btn-dark" id="guestBookPostingBtn">작성하기</button>
+            <button type="button" class="btn btn-outline-dark" id="guestBookCloseBtn">닫기</button>
         </div>
     </div>
 </body>
