@@ -255,7 +255,7 @@ $('#submit-guestbook').click(async function (event) {
     try {
         await addDoc(collection(db, 'Guestbook'), guestbookEntry);
         alert('방명록이 성공적으로 작성되었습니다.');
-
+        
         $('#guestbook-name').val('');
         $('#guestbook-message').val('');
 
@@ -339,7 +339,6 @@ export function GetGuestbookContent(Name, guestbookContentData, guestBookWindow)
 async function DB_SaveGuestBookContent(name, message, guestBookWindow) {
     let currentDate = new Date();
     let timestamp = currentDate.getTime();
-
     let guestbookEntry = {
         name: name,
         message: message,
@@ -349,7 +348,7 @@ async function DB_SaveGuestBookContent(name, message, guestBookWindow) {
     await addDoc(collection(db, 'Guestbook'), guestbookEntry);
    
     loadGuestbook();
-
     // 방명록 팝업창 닫기
-    guestBookWindow.close();     
+    guestBookWindow.close();
+    opener.location.reload();
 }
